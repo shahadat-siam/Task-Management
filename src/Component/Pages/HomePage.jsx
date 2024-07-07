@@ -1,15 +1,38 @@
-import DemoTaskSite from "../Task/DemoTask"; 
-import TaskList from "../Task/UserDemo";
+import AddTaskForm from "../Admin/AddTask"; 
+import useAuth from "../Hook/useAuth";
+import axios from "axios"; 
+import { useEffect, useState } from "react";
+import AllTask from "../Admin/AllTask";
+import LoadingSpinner from "../Shared/LoadingSpinner"; 
+import UserAllTask from "../User/UserAllTask";
 
- 
 const HomePage = () => {
-    return (
-        <div> 
-             <h1 className="text-3xl font-bold mb-4">Task Manager</h1>
-             <DemoTaskSite/>
-             <TaskList/>
-        </div>
-    );
+  const { user, loading } = useAuth();
+
+  const [person, setPerson] = useState([]); 
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await axios(
+        `${import.meta.env.VITE_API_URL}/user/${user?.email}`
+      );
+      setPerson(data);
+    };
+    getData();
+  }, [user?.email]);
+
+  if (loading) return <LoadingSpinner/>;
+
+  return (
+    <div>
+      {person.role == "Admin" ? 
+      <>
+       <AddTaskForm />
+       <AllTask/>
+      </> : <UserAllTask/>
+      }  
+      
+    </div>
+  );
 };
 
 export default HomePage;

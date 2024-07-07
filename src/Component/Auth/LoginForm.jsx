@@ -1,30 +1,42 @@
 // src/components/Auth/LoginForm.js
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import useAuth from "../Hook/useAuth";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const { register, handleSubmit } = useForm();
+  const {signIn, user} = useAuth()
+  const navigate = useNavigate()
   const [passwordShown, setPasswordShown] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const onSubmit = async (data) => {
-    // Handle form submission and login functionality here
-    // Example:
-    // try {
-    //   await signInWithEmailAndPassword(auth, data.email, data.password);
-    //   if (rememberMe) {
-    //     // Implement remember me functionality
-    //   }
-    // } catch (error) {
-    //   console.error("Error logging in", error);
-    // }
+    // Handle form submission and login functionality here 
+    try {
+      await signIn( data.email, data.password);
+      toast.success('login successfull')
+      navigate('/')
+      if (rememberMe) {
+        // Implement remember me functionality
+      }
+    } catch (error) {
+      console.error("Error logging in", error);
+    }
   };
 
   const handleForgotPassword = () => {
     // Handle forgot password functionality here
     // Example: redirect to forgot password page
   };
+
+  useEffect(() => {
+    if(user){
+      navigate('/')
+    }
+  }, [navigate,user])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 relative overflow-hidden">

@@ -1,21 +1,43 @@
 // src/components/Auth/SignupForm.js
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast"; 
+import useAuth from "../Hook/useAuth";
+import axios from "axios";
 
 const SignupForm = () => {
   const { register, handleSubmit } = useForm();
+  const {createUser, user, updateUserProfile} = useAuth()
+  const navigate = useNavigate()
   const [passwordShown, setPasswordShown] = useState(false);
 
-  const onSubmit = async (data) => {
-    // Handle form submission and sign-up functionality here
-    // Example:
-    // try {
-    //   await createUserWithEmailAndPassword(auth, data.email, data.password);
-    // } catch (error) {
-    //   console.error("Error signing up", error);
-    // }
+  const onSubmit = async (data) => { 
+    try { 
+        // create user 
+        await createUser(data.email, data.password);  
+        // update user profile
+        await updateUserProfile(data.name, data.image)
+
+        // save user in db
+        const userInfo = { name:data?.name, email:data?.email, role:'user'}
+        console.log(userInfo)
+        await axios.put(`${import.meta.env.VITE_API_URL}/user`, userInfo);
+        console.log(data)
+
+        navigate('/')
+        toast.success("User signed up successfully!");
+    } catch (error) {
+      console.error("Error signing up", error);
+    }
   };
+
+  useEffect(() => {
+    if(user){
+      navigate('/')
+    }
+  }, [navigate,user])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 relative overflow-hidden">

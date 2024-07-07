@@ -12,8 +12,7 @@
 - Authentication with Admin and User roles
 - Task management with assignment, editing, and status changes
 - Task status board with drag-and-drop functionality
-- Responsive design with Tailwind CSS and Daisy UI
-- Animations for task operations
+- Responsive design with Tailwind CSS and Daisy UI 
 
 ## Technologies Used
 
@@ -24,3 +23,4 @@
 - React Icons
 - React Hook Form
 - React Beautiful DnD
+- React @headlessui
